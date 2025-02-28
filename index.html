@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Result Search</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f9;
+            padding: 50px 20px;
+            margin: 0;
+            color: #343a40;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #007bff;
+            margin-bottom: 20px;
+            font-size: 26px;
+            font-weight: bold;
+        }
+        .input-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 15px 0;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            font-size: 18px;
+            transition: border-color 0.3s;
+            margin-right: 10px;
+        }
+        input[type="text"]:focus {
+            border-color: #0056b3;
+            outline: none;
+        }
+        button {
+            padding: 15px 25px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        .popup {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.5s;
+        }
+        .popup-content {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: left;
+            animation: slideIn 0.5s;
+            width: 400px;
+            font-size: 18px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .congratulations {
+            color: #28a745;
+            font-weight: bold;
+            font-size: 30px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .gpa-highlight, .board-roll-highlight {
+            color: #007bff;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        .fail-message {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: 18px;
+        }
+        .no-result {
+            color: #dc3545;
+            font-weight: bold;
+            font-size: 20px;
+            text-align: center;
+        }
+        .close-btn, .contract-btn {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .close-btn:hover, .contract-btn:hover {
+            background-color: #0056b3;
+        }
+        .contract-btn {
+            background-color: #ffc107;
+            display: none; /* Initially hidden */
+        }
+        .contract-btn:hover {
+            background-color: #e0a800;
+        }
+        .prepared-by {
+            margin-top: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            color: #007bff; /* Blue color for emphasis */
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Student Result Search</h1>
+    <div class="input-container">
+        <input type="text" id="rollNumber" placeholder="Enter your class roll number" oninput="this.value = this.value.replace(/[^0-9]/g, '');" />
+        <button onclick="searchResult()">Search</button>
+    </div>
+    <div class="prepared-by">Prepared by Jamiul Hasan</div> <!-- Highlighted -->
+</div>
+
+<div class="popup" id="popup">
+    <div class="popup-content" id="popupContent">
+        <div id="resultDetails"></div>
+        <button class="close-btn" id="closeBtn" onclick="closePopup()">Close</button>
+        <button class="contract-btn" id="contractBtn" onclick="contractDeveloper()">Contract Developer</button>
+        <div class="prepared-by">Prepared by Jamiul Hasan</div>
+    </div>
+</div>
+
+<script>
+    const students = [
+        { name: "Md. Jamiul Hasan Tamim", boardRoll: "307589", classRoll: 2462101, shift: "First", gpa: "4.45", grade: "A", failedSubjects: 0 },
+        { name: "Md. Ruman Karal", boardRoll: "307549", classRoll: 2462102, shift: "First", gpa: "2.91", grade: "C", failedSubjects: 0 },
+        { name: "Md. Bappy", boardRoll: "307550", classRoll: 2462103, shift: "First", gpa: "3.86", grade: "A-", failedSubjects: 0 },
+        { name: "Abdur Rouf Sifat", boardRoll: "307551", classRoll: 2462104, shift: "First", gpa: "3.55", grade: "A-", failedSubjects: 0 },
+        { name: "Nerob Karmokar", boardRoll: "307585", classRoll: 2462105, shift: "First", gpa: "4", grade: "A", failedSubjects: 0 },
+        { name: "Rudra Roy", boardRoll: "307552", classRoll: 2462106, shift: "First", gpa: "4.55", grade: "A", failedSubjects: 0 },
+        { name: "Md. Shehab Uddin", boardRoll: "307559", classRoll: 2462107, shift: "First", gpa: "3.5", grade: "A-", failedSubjects: 0 },
+        { name: "Md. Tafim Howlader", boardRoll: "307560", classRoll: 2462108, shift: "First", gpa: "2.86", grade: "C", failedSubjects: 0 },
+        { name: "Pavel Khan", boardRoll: "307586", classRoll: 2462109, shift: "First", gpa: "3.55", grade: "A-", failedSubjects: 0 },
+        { name: "Md. Moshiur Rahman", boardRoll: "307561", classRoll: 2462110, shift: "First", gpa: "3.73", grade: "A-", failedSubjects: 0 },
+        { name: "Md. Majid", boardRoll: "307571", classRoll: 2462111, shift: "First", gpa: "4.32", grade: "A", failedSubjects: 0 },
+        { name: "Oli Ullah Samir", boardRoll: "307572", classRoll: 2462112, shift: "First", gpa: "4", grade: "A", failedSubjects: 0 },
+        { name: "Md. Salman Sarder", boardRoll: "307573", classRoll: 2462113, shift: "First", gpa: "3.73", grade: "A-", failedSubjects: 0 },
+        { name: "Md. Nobin Islam Siam", boardRoll: "307587", classRoll: 2462114, shift: "First", gpa: "3.05", grade: "B", failedSubjects: 0 },
+        { name: "Md.Saim", boardRoll: "307576", classRoll: 2462115, shift: "First", gpa: "3.59", grade: "A-", failedSubjects: 0 },
+        { name: "Md.Siam Talukder", boardRoll: "307582", classRoll: 2462116, shift: "First", gpa: "3.64", grade: "A-", failedSubjects: 0 },
+        { name: "Md. Shefat Howlader", boardRoll: "307594", classRoll: 2462117, shift: "First", gpa: "3.23", grade: "B", failedSubjects: 0 },
+        { name: "Yiasin Arafat", boardRoll: "307583", classRoll: 2462118, shift: "First", gpa: "3.55", grade: "A-", failedSubjects: 0 },
+        { name: "Md. Hemel Khan", boardRoll: "307557", classRoll: 2462119, shift: "First", gpa: "4.18", grade: "A", failedSubjects: 0 },
+        { name: "Md. Fahim Islam", boardRoll: "307562", classRoll: 2462120, shift: "First", gpa: "2.95", grade: "C", failedSubjects: 0 },
+        { name: "Md. Mehedi Hasan", boardRoll: "307564", classRoll: 2462122, shift: "First", gpa: "3.55", grade: "A-", failedSubjects: 0 },
+        { name: "Mst. Elma Akter Asma (F)", boardRoll: "307451", classRoll: 2462125, shift: "First", gpa: "3.77", grade: "A-", failedSubjects: 0 },
+        { name: "Partho Chandra Debnath", boardRoll: "307567", classRoll: 2462126, shift: "First", gpa: "4", grade: "A", failedSubjects: 0 },
+        { name: "Md. Abdul Al Tushar", boardRoll: "307569", classRoll: 2462127, shift: "First", gpa: "3.45", grade: "B", failedSubjects: 0 },
+        { name: "Mahedi Hasan", boardRoll: "307574", classRoll: 2462128, shift: "First", gpa: "3.55", grade: "A-", failedSubjects: 0 },
+        { name: "Md. Murad Hasan Mahim", boardRoll: "307575", classRoll: 2462129, shift: "First", gpa: "3.55", grade: "A-", failedSubjects: 0 },
+        { name: "Lamia (F)", boardRoll: "307454", classRoll: 2462131, shift: "First", gpa: "2.91", grade: "C", failedSubjects: 0 },
+        { name: "Mahadi Islam", boardRoll: "307584", classRoll: 2462135, shift: "First", gpa: "2.86", grade: "C", failedSubjects: 0 },
+        { name: "Md. Shawon Howlader", boardRoll: "307595", classRoll: 2462136, shift: "First", gpa: "2.77", grade: "C", failedSubjects: 0 },
+        { name: "Md. Rezaon Ahmed", boardRoll: "307563", classRoll: 2462121, shift: "First", gpa: "0.00", grade: "F", failedSubjects: 2 },
+        { name: "Marshud Sarder", boardRoll: "307593", classRoll: 2462134, shift: "First", gpa: "0.00", grade: "F", failedSubjects: 1 },
+        { name: "Md. Emon Howlader", boardRoll: "307591", classRoll: 2462137, shift: "First", gpa: "0.00", grade: "F", failedSubjects: 1 },
+    ];
+
+    function searchResult() {
+        const rollNumber = document.getElementById("rollNumber").value;
+        const student = students.find(s => s.classRoll == rollNumber); // Use == instead of ===
+        
+        const resultDetails = document.getElementById("resultDetails");
+        const popup = document.getElementById("popup");
+        const closeBtn = document.getElementById("closeBtn");
+        const contractBtn = document.getElementById("contractBtn");
+        
+        if (student) {
+            if (student.failedSubjects > 0) {
+                resultDetails.innerHTML = `
+                    <strong>Name:</strong> ${student.name}<br>
+                    <strong class="board-roll-highlight">Board Roll:</strong> ${student.boardRoll}<br>
+                    <strong>Class Roll:</strong> ${student.classRoll}<br>
+                    <div class="fail-message">আপনি ${student.failedSubjects} সাব্জেক্টে ফেল করেছেন।</div>
+                `;
+                closeBtn.style.display = "block"; // Show close button
+                contractBtn.style.display = "none"; // Hide contract button
+            } else {
+                resultDetails.innerHTML = `
+                    <div class="congratulations">Congratulations!</div>
+                    <strong>Name:</strong> ${student.name}<br>
+                    <strong class="board-roll-highlight">Board Roll:</strong> ${student.boardRoll}<br>
+                    <strong>Class Roll:</strong> ${student.classRoll}<br>
+                    <strong class="gpa-highlight">GPA:</strong> ${student.gpa}<br>
+                    <strong>Grade:</strong> ${student.grade}
+                `;
+                closeBtn.style.display = "block"; // Show close button
+                contractBtn.style.display = "none"; // Hide contract button
+            }
+            popup.style.display = "flex";
+        } else {
+            resultDetails.innerHTML = "<div class='no-result'>No result found for this roll number.</div>";
+            closeBtn.style.display = "none"; // Hide close button
+            contractBtn.style.display = "block"; // Show contract button
+            popup.style.display = "flex";
+        }
+    }
+
+    function closePopup() {
+        document.getElementById("popup").style.display = "none";
+    }
+
+    function contractDeveloper() {
+        window.location.href = "mailto:jamiulhasan@example.com"; // Replace with actual email
+    }
+
+    // Close popup when clicking outside of it
+    document.getElementById("popup").addEventListener("click", function(event) {
+        if (event.target === this) {
+            closePopup();
+        }
+    });
+</script>
+
+</body>
+</html>
