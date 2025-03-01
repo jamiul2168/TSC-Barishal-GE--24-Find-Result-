@@ -9,15 +9,17 @@
         body {
             font-family: 'Roboto', sans-serif;
             background-color: #f4f4f9;
-            padding: 50px 20px;
+            padding: 20px;
             margin: 0;
             color: #343a40;
+            font-size: 16px;
+            line-height: 1.6;
         }
         .container {
             max-width: 600px;
             margin: 0 auto;
             background: #ffffff;
-            padding: 40px;
+            padding: 20px;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             text-align: center;
@@ -25,29 +27,32 @@
         h1 {
             color: #007bff;
             margin-bottom: 20px;
-            font-size: 26px;
+            font-size: 24px;
             font-weight: bold;
         }
         .input-container {
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             margin: 15px 0;
         }
         input[type="text"] {
-            flex: 1;
+            width: 90%;
+            max-width: 400px;
             padding: 15px;
             border: 2px solid #007bff;
             border-radius: 8px;
             font-size: 18px;
             transition: border-color 0.3s;
-            margin-right: 10px;
+            margin-bottom: 10px;
         }
         input[type="text"]:focus {
             border-color: #0056b3;
             outline: none;
         }
         button {
+            width: 90%;
+            max-width: 400px;
             padding: 15px 25px;
             background-color: #007bff;
             color: white;
@@ -75,38 +80,39 @@
         }
         .popup-content {
             background-color: #ffffff;
-            padding: 40px;
+            padding: 20px;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             text-align: left;
             animation: slideIn 0.5s;
-            width: 400px;
-            font-size: 18px;
+            width: 90%;
+            max-width: 400px;
+            font-size: 16px;
             max-height: 80vh;
             overflow-y: auto;
         }
         .congratulations {
             color: #28a745;
             font-weight: bold;
-            font-size: 30px;
+            font-size: 24px;
             margin-bottom: 20px;
             text-align: center;
         }
         .gpa-highlight, .board-roll-highlight {
             color: #007bff;
             font-weight: bold;
-            font-size: 20px;
+            font-size: 18px;
         }
         .fail-message {
             color: red;
             font-weight: bold;
             margin-top: 10px;
-            font-size: 18px;
+            font-size: 16px;
         }
         .no-result {
             color: #dc3545;
             font-weight: bold;
-            font-size: 20px;
+            font-size: 18px;
             text-align: center;
         }
         .close-btn, .contract-btn {
@@ -126,7 +132,7 @@
         }
         .contract-btn {
             background-color: #0ab6fa;
-            display: none; /* Initially hidden */
+            display: none;
         }
         .contract-btn:hover {
             background-color: #0ab6fa;
@@ -136,7 +142,7 @@
             font-size: 14px;
             font-weight: bold;
             text-align: center;
-            color: #007bff; /* Blue color for emphasis */
+            color: #007bff;
         }
         @keyframes fadeIn {
             from { opacity: 0; }
@@ -156,7 +162,7 @@
         <input type="text" id="rollNumber" placeholder="Enter your class roll number" oninput="this.value = this.value.replace(/[^0-9]/g, '');" />
         <button onclick="searchResult()">Search</button>
     </div>
-    <div class="prepared-by">Developed by <strong>Jamiul Hasan</strong></div> <!-- Highlighted -->
+    <div class="prepared-by">Developed by <strong>Jamiul Hasan</strong></div>
 </div>
 
 <div class="popup" id="popup">
@@ -164,7 +170,7 @@
         <div id="resultDetails"></div>
         <button class="close-btn" id="closeBtn" onclick="closePopup()">Close</button>
         <button class="contract-btn" id="contractBtn" onclick="contractDeveloper()">Contract Developer</button>
-        <div class="prepared-by">Developed by <strong>Jamiul Hasan</strong></div> <!-- Highlighted -->
+        <div class="prepared-by">Developed by <strong>Jamiul Hasan</strong></div>
     </div>
 </div>
 
@@ -206,7 +212,7 @@
 
     function searchResult() {
         const rollNumber = document.getElementById("rollNumber").value;
-        const student = students.find(s => s.classRoll == rollNumber); // Use == instead of ===
+        const student = students.find(s => s.classRoll == rollNumber);
         
         const resultDetails = document.getElementById("resultDetails");
         const popup = document.getElementById("popup");
@@ -221,8 +227,8 @@
                     <strong>Class Roll:</strong> ${student.classRoll}<br>
                     <div class="fail-message">আপনি লিখিত ${student.failedSubjects} টি বিষয়ে অকৃতকার্য হয়েছেন...😭😭😭</div>
                 `;
-                closeBtn.style.display = "block"; // Show close button
-                contractBtn.style.display = "none"; // Hide contract button
+                closeBtn.style.display = "block";
+                contractBtn.style.display = "none";
             } else {
                 resultDetails.innerHTML = `
                     <div class="congratulations">Congratulations!</div>
@@ -232,28 +238,36 @@
                     <strong class="gpa-highlight">GPA:</strong> ${student.gpa}<br>
                     <strong>Grade:</strong> ${student.grade}
                 `;
-                closeBtn.style.display = "block"; // Show close button
-                contractBtn.style.display = "none"; // Hide contract button
+                closeBtn.style.display = "block";
+                contractBtn.style.display = "none";
             }
             popup.style.display = "flex";
+            document.body.style.overflow = "hidden";
         } else {
             resultDetails.innerHTML = "<div class='no-result'>No result found for this roll number.</div>";
-            closeBtn.style.display = "none"; // Hide close button
-            contractBtn.style.display = "block"; // Show contract button
+            closeBtn.style.display = "none";
+            contractBtn.style.display = "block";
             popup.style.display = "flex";
+            document.body.style.overflow = "hidden";
         }
     }
 
     function closePopup() {
         document.getElementById("popup").style.display = "none";
+        document.body.style.overflow = "auto";
     }
 
     function contractDeveloper() {
-        window.location.href = "https://web.facebook.com/@jamiul2168"; // Replace with actual email
+        window.location.href = "https://web.facebook.com/@jamiul2168";
     }
 
-    // Close popup when clicking outside of it
     document.getElementById("popup").addEventListener("click", function(event) {
+        if (event.target === this) {
+            closePopup();
+        }
+    });
+
+    document.getElementById("popup").addEventListener("touchstart", function(event) {
         if (event.target === this) {
             closePopup();
         }
