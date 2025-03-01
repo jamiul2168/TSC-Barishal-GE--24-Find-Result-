@@ -156,7 +156,7 @@
         <input type="text" id="rollNumber" placeholder="Enter your class roll number" oninput="this.value = this.value.replace(/[^0-9]/g, '');" />
         <button onclick="searchResult()">Search</button>
     </div>
-    <div class="prepared-by">Developed by Jamiul Hasan</div> <!-- Highlighted -->
+    <div class="prepared-by">Developed by <strong>Jamiul Hasan</strong></div> <!-- Highlighted -->
 </div>
 
 <div class="popup" id="popup">
@@ -164,7 +164,7 @@
         <div id="resultDetails"></div>
         <button class="close-btn" id="closeBtn" onclick="closePopup()">Close</button>
         <button class="contract-btn" id="contractBtn" onclick="contractDeveloper()">Contract Developer</button>
-        <div class="prepared-by">Developed by Jamiul Hasan</div>
+        <div class="prepared-by">Developed by <strong>Jamiul Hasan</strong></div> <!-- Highlighted -->
     </div>
 </div>
 
@@ -219,7 +219,7 @@
                     <strong>Name:</strong> ${student.name}<br>
                     <strong class="board-roll-highlight">Board Roll:</strong> ${student.boardRoll}<br>
                     <strong>Class Roll:</strong> ${student.classRoll}<br>
-                    <div class="fail-message">আপনি ${student.failedSubjects} সাব্জেক্টে ফেল করেছেন।</div>
+                    <div class="fail-message">আপনি লিখিত ${student.failedSubjects} টি বিষয়ে অকৃতকার্য হয়েছেন...😭😭😭</div>
                 `;
                 closeBtn.style.display = "block"; // Show close button
                 contractBtn.style.display = "none"; // Hide contract button
@@ -249,7 +249,7 @@
     }
 
     function contractDeveloper() {
-        window.location.href = "mailto:jamiulhasan@example.com"; // Replace with actual email
+        window.location.href = "https://web.facebook.com/@jamiul2168"; // Replace with actual email
     }
 
     // Close popup when clicking outside of it
